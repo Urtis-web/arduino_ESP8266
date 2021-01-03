@@ -1,0 +1,92 @@
+
+
+
+#include <ESP8266WiFi.h>
+#include <BlynkSimpleEsp8266.h>
+
+#define BLYNK_PRINT Serial
+char auth[] = "XL18zNCC_zyV85ImBFO6vcyx_RCTtChQ";    // Project authentication key
+char ssid[] = "MEZON_0BF262";                          // Network (HotSpot or Router name)
+char pass[] = "74541999";                            // Corresponding Password
+
+#define pir_pinas 14 
+#define LED_pirmas 16 
+#define LED_antras 5 
+#define LED_trecias 4 
+int pir_pino_reiksme = 0;
+/*
+int pir_pinas = 0;
+int LED_pirmas = 0;
+int LED_antras = 0;
+int LED_trecias = 0;
+*/
+int variklio_ijungimas = 0;
+int pinValue = 0;
+
+BlynkTimer timer;
+
+// This function sends Arduino's up time every second to Virtual Pin (5).
+// In the app, Widget's reading frequency should be set to PUSH. This means
+// that you define how often to send data to Blynk App.
+
+
+void setup()
+{
+  // Debug console
+  Serial.begin(9600);
+
+  Blynk.begin(auth, ssid, pass);
+  // You can also specify server:
+  //Blynk.begin(auth, ssid, pass, "blynk-cloud.com", 80);
+  //Blynk.begin(auth, ssid, pass, IPAddress(192,168,1,100), 8080);
+
+  // Setup a function to be called every second
+  pinMode(pir_pinas, INPUT);  
+  pinMode(LED_pirmas, OUTPUT); 
+   pinMode(LED_antras, OUTPUT);  
+    pinMode(LED_trecias, OUTPUT);   
+}
+
+void sendSensor()
+{
+pir_pino_reiksme = digitalRead(pir_pinas);
+if (pir_pino_reiksme == HIGH){
+  Blynk.virtualWrite(V2, "Uždegta_šviesa");
+  digitalWrite(LED_pirmas, HIGH);
+  delay(100);
+  digitalWrite(LED_antras, HIGH);
+  delay(100);
+  digitalWrite(LED_trecias, HIGH);
+  delay(2000);
+  
+}
+if (pir_pino_reiksme == LOW){
+  Blynk.virtualWrite(V2, "Užgesinta_šviesa");
+  digitalWrite(LED_pirmas, LOW);
+  
+  digitalWrite(LED_antras, LOW);
+  
+  digitalWrite(LED_trecias, LOW);
+  delay(60);
+}
+}
+
+/*
+BLYNK_WRITE(V2)  // antras mygtukas
+{
+  pinValue = param.asInt(); // assigning incoming value from pin V1 to a variable
+  // You can also use:
+  // String i = param.asStr();
+  // double d = param.asDouble();
+  digitalWrite(LED_pirmas, pinValue);
+  digitalWrite(LED_antras, pinValue);
+  digitalWrite(LED_trecias, pinValue);
+}
+*/
+
+void loop()
+{
+  Blynk.run();
+  timer.run();
+  sendSensor();
+}
