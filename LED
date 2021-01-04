@@ -1,0 +1,256 @@
+
+
+
+#include <ESP8266WiFi.h>
+#include <BlynkSimpleEsp8266.h>
+
+#define BLYNK_PRINT Serial
+char auth[] = "XL18zNCC_zyV85ImBFO6vcyx_RCTtChQ";    // Project authentication key
+char ssid[] = "MEZON_0BF262";                          // Network (HotSpot or Router name)
+char pass[] = "74541999";                            // Corresponding Password
+
+#define mygtukas 0
+#define LED_raudonas 10
+#define LED_geltonas 9
+#define LED_zalias 13
+#define LED_melynas 15
+
+int mygtuko_flegas = 0;
+int raudono_flegas = 0;
+int geltono_flegas = 0;
+int zalio_flegas = 0;
+int melyno_flegas = 0;
+
+int septintas = 0;
+int astuntas = 0;
+int devintas = 0;
+int desimtas = 0;
+
+int button_Value = 0;
+
+BlynkTimer timer;
+
+void setup()
+{
+  // Debug console
+  Serial.begin(9600);
+
+  Blynk.begin(auth, ssid, pass);
+  // You can also specify server:
+  //Blynk.begin(auth, ssid, pass, "blynk-cloud.com", 80);
+  //Blynk.begin(auth, ssid, pass, IPAddress(192,168,1,100), 8080);
+
+  // Setup a function to be called every second
+  pinMode(mygtukas, INPUT);  
+  pinMode(LED_raudonas, OUTPUT); 
+  pinMode(LED_geltonas, OUTPUT);  
+  pinMode(LED_zalias, OUTPUT);   
+  pinMode(LED_melynas, OUTPUT);  
+}
+
+void MYGTUKAI()
+{
+button_Value = digitalRead(mygtukas);
+
+if ( (button_Value == HIGH) && (raudono_flegas == 0) && (geltono_flegas == 0) && (zalio_flegas == 0) && (melyno_flegas == 0) && (mygtuko_flegas == 0) ){  // jei pirma karta paspaudziamas
+  Blynk.virtualWrite(V7, HIGH);
+  digitalWrite(LED_raudonas, HIGH);
+  raudono_flegas = 1;
+  mygtuko_flegas = 1;
+  geltono_flegas = 0;
+  zalio_flegas = 0;
+  melyno_flegas = 0;
+  delay(1000);
+}
+
+if ( (button_Value == LOW) && (raudono_flegas == 0) && (geltono_flegas == 0) && (zalio_flegas == 0) && (melyno_flegas == 0) && (mygtuko_flegas == 0) ){  // jei pirma karta tuscias
+  Blynk.virtualWrite(V7, LOW);
+  digitalWrite(LED_raudonas, LOW);
+  digitalWrite(LED_geltonas, LOW);
+  digitalWrite(LED_zalias, LOW);
+  digitalWrite(LED_melynas, LOW);
+  raudono_flegas = 0;
+  mygtuko_flegas = 0;
+  geltono_flegas = 0;
+  zalio_flegas = 0;
+  melyno_flegas = 0;
+  delay(1000);
+}
+
+if ( (button_Value == HIGH) && (raudono_flegas == 1) && (geltono_flegas == 0) && (zalio_flegas == 0) && (melyno_flegas == 0) && (mygtuko_flegas == 0) ){  // raudonam
+  Blynk.virtualWrite(V7, HIGH);
+  digitalWrite(LED_raudonas, HIGH);
+  raudono_flegas = 1;
+  mygtuko_flegas = 1;
+  geltono_flegas = 0;
+  zalio_flegas = 0;
+  melyno_flegas = 0;
+  delay(1000);
+}
+if ( (button_Value == LOW) && (raudono_flegas == 1) && (geltono_flegas == 0) && (zalio_flegas == 0) && (melyno_flegas == 0) && (mygtuko_flegas == 1) ){  // raudonam
+  Blynk.virtualWrite(V7, LOW);
+  digitalWrite(LED_raudonas, LOW);
+  raudono_flegas = 0;
+  mygtuko_flegas = 0;
+  geltono_flegas = 1;
+  zalio_flegas = 0;
+  melyno_flegas = 0;
+  delay(1000);
+}
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+if ( (button_Value == HIGH) && (raudono_flegas == 0) && (geltono_flegas == 1) && (zalio_flegas == 0) && (melyno_flegas == 0) && (mygtuko_flegas == 0) ){  // geltonam
+  Blynk.virtualWrite(V8, HIGH);
+  digitalWrite(LED_geltonas, HIGH);
+  raudono_flegas = 0;
+  mygtuko_flegas = 1;
+  geltono_flegas = 1;
+  zalio_flegas = 0;
+  melyno_flegas = 0;
+}
+if ( (button_Value == LOW) && (raudono_flegas == 0) && (geltono_flegas == 1) && (zalio_flegas == 0) && (melyno_flegas == 0) && (mygtuko_flegas == 1) ){  // geltonam
+  Blynk.virtualWrite(V8, LOW);
+  digitalWrite(LED_geltonas, LOW);
+  raudono_flegas = 0;
+  mygtuko_flegas = 0;
+  geltono_flegas = 0;
+  zalio_flegas = 1;
+  melyno_flegas = 0;
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+if ( (button_Value == HIGH) && (raudono_flegas == 0) && (geltono_flegas == 0) && (zalio_flegas == 1) && (melyno_flegas == 0) && (mygtuko_flegas == 0) ){  // zaliam
+  Blynk.virtualWrite(V9, HIGH);
+  digitalWrite(LED_zalias, HIGH);
+  raudono_flegas = 0;
+  mygtuko_flegas = 1;
+  geltono_flegas = 0;
+  zalio_flegas = 1;
+  melyno_flegas = 0;
+}
+if ( (button_Value == LOW) && (raudono_flegas == 0) && (geltono_flegas == 0) && (zalio_flegas == 1) && (melyno_flegas == 0) && (mygtuko_flegas == 1) ){  // zaliam
+  Blynk.virtualWrite(V9, LOW);
+  digitalWrite(LED_zalias, LOW);
+  raudono_flegas = 0;
+  mygtuko_flegas = 0;
+  geltono_flegas = 0;
+  zalio_flegas = 0;
+  melyno_flegas = 1;
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*
+if ( (button_Value == HIGH) && (raudono_flegas == 0) && (geltono_flegas == 0) && (zalio_flegas == 0) && (melyno_flegas == 1) && (mygtuko_flegas == 0) ){  // melynam
+  Blynk.virtualWrite(V10, HIGH);
+  digitalWrite(LED_melynas, HIGH);
+  raudono_flegas = 0;
+  mygtuko_flegas = 1;
+  geltono_flegas = 0;
+  zalio_flegas = 0;
+  melyno_flegas = 1;
+}
+if ( (button_Value == LOW) && (raudono_flegas == 0) && (geltono_flegas == 0) && (zalio_flegas ==0 ) && (melyno_flegas == 1) && (mygtuko_flegas == 1) ){  // melynam
+  Blynk.virtualWrite(V10, LOW);
+  digitalWrite(LED_melynas, LOW);
+  raudono_flegas = 1;
+  mygtuko_flegas = 0;
+  geltono_flegas = 0;
+  zalio_flegas = 0;
+  melyno_flegas = 0;
+}
+delay(50);
+*/
+}
+/*
+BLYNK_WRITE(V7) 
+{
+  septintas = param.asInt(); // assigning incoming value from pin V7 to a variable
+  if (septintas == 1){
+  raudono_flegas = 1;
+  mygtuko_flegas = 1;
+  geltono_flegas = 0;
+  zalio_flegas = 0;
+  melyno_flegas = 0;
+  }
+    if (septintas == 0){
+  raudono_flegas = 0;
+  mygtuko_flegas = 0;
+  geltono_flegas = 1;
+  zalio_flegas = 0;
+  melyno_flegas = 0;
+  }
+}
+BLYNK_WRITE(V8) 
+{
+  astuntas = param.asInt(); // assigning incoming value from pin V7 to a variable
+  if (astuntas == 1){
+  raudono_flegas = 0;
+  mygtuko_flegas = 1;
+  geltono_flegas = 1;
+  zalio_flegas = 0;
+  melyno_flegas = 0;
+  }
+    if (astuntas == 0){
+  raudono_flegas = 0;
+  mygtuko_flegas = 0;
+  geltono_flegas = 0;
+  zalio_flegas = 1;
+  melyno_flegas = 0;
+  }
+}
+BLYNK_WRITE(V9) 
+{
+  devintas = param.asInt(); // assigning incoming value from pin V7 to a variable
+  if (devintas == 1){
+  raudono_flegas = 0;
+  mygtuko_flegas = 1;
+  geltono_flegas = 0;
+  zalio_flegas = 1;
+  melyno_flegas = 0;
+  }
+    if (devintas == 0){
+  raudono_flegas = 0;
+  mygtuko_flegas = 0;
+  geltono_flegas = 0;
+  zalio_flegas = 0;
+  melyno_flegas = 1;
+  }
+}
+BLYNK_WRITE(V10) 
+{
+  desimtas = param.asInt(); // assigning incoming value from pin V7 to a variable
+  if (desimtas == 1){
+  raudono_flegas = 0;
+  mygtuko_flegas = 1;
+  geltono_flegas = 0;
+  zalio_flegas = 1;
+  melyno_flegas = 0;
+  }
+    if (desimtas == 0){
+  raudono_flegas = 1;
+  mygtuko_flegas = 0;
+  geltono_flegas = 0;
+  zalio_flegas = 0;
+  melyno_flegas = 0;
+  }
+}
+*/
+
+
+
+/*
+BLYNK_WRITE(V2)  // antras mygtukas
+{
+  pinValue = param.asInt(); // assigning incoming value from pin V1 to a variable
+  // You can also use:
+  // String i = param.asStr();
+  // double d = param.asDouble();
+  digitalWrite(LED_pirmas, pinValue);
+  digitalWrite(LED_antras, pinValue);
+  digitalWrite(LED_trecias, pinValue);
+}
+*/
+
+void loop()
+{
+  Blynk.run();
+  timer.run();
+  MYGTUKAI();
+}
